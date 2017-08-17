@@ -7,6 +7,7 @@ use CurrencyCloud\Model\Pagination;
 use CurrencyCloud\Model\Payer;
 use CurrencyCloud\Model\Payment;
 use CurrencyCloud\Model\Payments;
+use CurrencyCloud\Model\PaymentSubmission;
 use DateTime;
 use stdClass;
 
@@ -148,6 +149,24 @@ class PaymentsEntryPoint extends AbstractEntityEntryPoint
             return $this->createPaymentFromResponse($response);
         }, $onBehalfOf);
     }
+
+    /**
+     * @param $id
+     * @param null $onBehalfOf
+     * @return \CurrencyCloud\Model\EntityInterface|PaymentSubmission
+     */
+    public function getPaymentSubmission($id, $onBehalfOf = null)
+    {
+        return $this->doRetrieve(sprintf('payments/%s/submission', $id), function (stdClass $response) {
+            $ret =new \CurrencyCloud\Model\PaymentSubmission();
+            $ret->setMt103($response->mt103);
+            $ret->setStatus($response->status);
+            $ret->setSubmissionRef($response->submission_ref);
+            return $ret;
+        }, $onBehalfOf);
+    }
+
+
 
     /**
      * @param Payment $payment
